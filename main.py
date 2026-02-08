@@ -1,0 +1,59 @@
+# main.py
+import pygame
+from menu import Menu
+from player import Player
+
+# Initialize Pygame
+pygame.init()
+
+# Screen setup
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Fractures - Prototype 2")
+
+# Clock for controlling FPS
+clock = pygame.time.Clock()
+FPS = 60
+
+# Initialize game components
+menu = Menu(screen)
+player = Player(400, 300)  # Starting position for testing
+
+# Game states
+STATE_MENU = "menu"
+STATE_PLAYING = "playing"
+game_state = STATE_MENU
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+        # Handle menu events
+        if game_state == STATE_MENU:
+            menu.handle_event(event)
+
+        # Handle player events
+        if game_state == STATE_PLAYING:
+            player.handle_event(event)
+
+    # Update game logic
+    if game_state == STATE_PLAYING:
+        player.update()
+
+    # Draw everything
+    screen.fill((135, 206, 250))  # Sky-blue background
+
+    if game_state == STATE_MENU:
+        menu.draw()
+        if menu.start_game_selected:  # Example flag from menu
+            game_state = STATE_PLAYING
+    elif game_state == STATE_PLAYING:
+        player.draw(screen)
+
+    pygame.display.flip()
+    clock.tick(FPS)
+
+pygame.quit()
